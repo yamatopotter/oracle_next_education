@@ -3,12 +3,17 @@ package br.com.apolloit.screenmatch.principal;
 import br.com.apolloit.screenmatch.model.DadosEpisodio;
 import br.com.apolloit.screenmatch.model.DadosSerie;
 import br.com.apolloit.screenmatch.model.DadosTemporada;
+import br.com.apolloit.screenmatch.model.Episodio;
 import br.com.apolloit.screenmatch.service.ConsumoApi;
 import br.com.apolloit.screenmatch.service.ConverteDados;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
     private Scanner leitura = new Scanner(System.in);
@@ -36,14 +41,40 @@ public class Principal {
 
         temporadas.forEach(System.out::println);
 
-//        for(int i=0; i< dadosSerie.totalTemporadas(); i++){
-//            List<DadosEpisodio> episodiosTemporada = temporadas.get(i).episodios();
-//
-//            for(int j=0; j<episodiosTemporada.size(); j++){
-//                System.out.println(episodiosTemporada.get(j).titulo());
-//            }
-//        }
+        temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 
-        temporadas.forEach(t -> t.episodios().forEach( e -> System.out.println(e.titulo())));
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
+                .flatMap(temporada -> temporada.episodios().stream())
+                .collect(Collectors.toList());
+
+        System.out.println("Top 5 Episódios");
+        dadosEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(e -> new Episodio(t.temporada(), e))
+                ).collect(Collectors.toList());
+
+        episodios.forEach(System.out::println);
+
+        System.out.println("A partir de que ano você deseja ver os episódios");
+        var ano = leitura.nextInt();
+        leitura.nextLine();
+
+        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+        episodios.stream()
+                .filter(e -> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+                .forEach(e -> {
+                    System.out.println(
+                            "Temporada: "+e.getTemporada()+
+                                    "Episódio: "+e.getTitulo()+
+                                    "Data de Lançamento"+e.getDataLancamento().format(formatter)
+                    );
+                });
     }
 }
