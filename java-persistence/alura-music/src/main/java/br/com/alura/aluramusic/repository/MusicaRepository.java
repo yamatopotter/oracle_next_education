@@ -1,4 +1,7 @@
 package br.com.alura.aluramusic.repository;
 
-public interface MusicaRepository {
+import br.com.alura.aluramusic.model.Musica;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MusicaRepository extends JpaRepository<Musica, Long> {
 }

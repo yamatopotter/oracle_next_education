@@ -4,6 +4,7 @@ import br.com.alura.aluramusic.model.Artista;
 import br.com.alura.aluramusic.model.Musica;
 import br.com.alura.aluramusic.repository.ArtistaRepository;
 import br.com.alura.aluramusic.repository.MusicaRepository;
+import br.com.alura.aluramusic.service.ConsultaChatGPT;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,15 +48,12 @@ public class Principal {
                     listArtistas();
                     break;
                 case 4:
-                    //ToDo: Criar e configurar método
                     listMusicas();
                     break;
                 case 5:
-                    //ToDo: Criar e configurar método
                     listMusicasDeArtista();
                     break;
                 case 6:
-                    //ToDo: Criar e configurar método
                     searchSobreArtista();
                     break;
                 case 0:
@@ -69,14 +67,28 @@ public class Principal {
     }
 
     private void searchSobreArtista() {
+        System.out.println("Digite o nome do artista");
+        var nomeArtista = leitura.nextLine();
+
+        ConsultaChatGPT.obterInformacaoArtista(nomeArtista);
     }
 
     private void listMusicasDeArtista() {
+        System.out.println("Digite o artista que deseja listar as músicas");
+        var nomeArtista = leitura.nextLine();
 
+        Optional<Artista> artista = artistaRepository.findByNomeContainingIgnoreCase(nomeArtista);
+        List<Musica> listMusicas = artista.get().getMusicas();
+
+        System.out.println("Aqui estão as músicas do "+artista.get().getNome()+": ");
+        listMusicas.forEach(System.out::println);
     }
 
     private void listMusicas() {
+        System.out.println("Músicas registradas no sistema: ");
+        List<Musica> listMusicas = musicaRepository.findAll();
 
+        listMusicas.forEach(System.out::println);
     }
 
     private void listArtistas() {
