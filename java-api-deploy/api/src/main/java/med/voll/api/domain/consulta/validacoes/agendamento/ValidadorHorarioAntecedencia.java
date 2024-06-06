@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class ValidadorHorarioAntecedencia implements ValidadorAgendamentoDeConsulta {
     public void validar(DadosAgendamentoConsulta dados){
         var dataConsulta = dados.data();
-
         var agora = LocalDateTime.now();
         var diferencaEmMinutos = Duration.between(agora, dataConsulta).toMinutes();
 

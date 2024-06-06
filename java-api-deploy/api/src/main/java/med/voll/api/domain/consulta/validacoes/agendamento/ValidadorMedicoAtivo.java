@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ValidadorMedicoAtivo implements ValidadorAgendamentoDeConsulta{
+
     @Autowired
     private MedicoRepository medicoRepository;
 
