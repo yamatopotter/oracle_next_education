@@ -62,7 +62,7 @@ class MedicoRepositoryTest {
     }
 
     private void cadastrarConsulta(Medico medico, Paciente paciente, LocalDateTime data) {
-        entityManager.persist(new Consulta(null, medico, paciente, data));
+        entityManager.persist(new Consulta(null, medico, paciente, data, null));
     }
 
     private Medico cadastrarMedico(String nome, String email, String crm, Especialidade especialidade) {
